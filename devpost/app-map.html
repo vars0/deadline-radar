@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Deadline Radar — App Map</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: #f6f5f0;
+        color: #19291f;
+        font:
+          16px/1.65 system-ui,
+          sans-serif;
+      }
+      main {
+        max-width: 900px;
+        margin: auto;
+        padding: 50px 25px;
+      }
+      h1 {
+        font-size: 42px;
+        line-height: 1.15;
+        letter-spacing: -1.5px;
+      }
+      h2 {
+        font-size: 22px;
+        margin-top: 30px;
+      }
+      h3 {
+        font-size: 17px;
+      }
+      p {
+        color: #5e6d56;
+      }
+      small {
+        color: #75816b;
+      }
+      a {
+        color: #a43c1f;
+        text-underline-offset: 3px;
+      }
+      code {
+        background: #edf0e5;
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-size: 13px;
+      }
+      section,
+      .flow {
+        background: #fff;
+        border: 1px solid #dde3d3;
+        border-radius: 14px;
+        padding: 22px;
+        margin: 18px 0;
+      }
+      .flow {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .flow div {
+        flex: 1;
+        min-width: 155px;
+      }
+      .flow b {
+        display: block;
+      }
+      .flow span {
+        font-size: 13px;
+        color: #77876a;
+      }
+      .arrow {
+        color: #d94c24;
+        font-size: 25px;
+      }
+      .tag {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #d94c24;
+      }
+      details {
+        border-top: 1px solid #e6eadd;
+        padding-top: 12px;
+        margin-top: 15px;
+      }
+      summary {
+        cursor: pointer;
+      }
+      a:focus-visible,
+      summary:focus-visible {
+        outline: 2px solid #d94c24;
+        outline-offset: 4px;
+      }
+      li {
+        margin: 8px 0;
+      }
+      pre {
+        white-space: pre-wrap;
+        background: #edf0e5;
+        padding: 15px;
+        border-radius: 8px;
+      }
+      pre code {
+        padding: 0;
+      }
+      @media (max-width: 550px) {
+        h1 {
+          font-size: 32px;
+        }
+        .flow {
+          display: block;
+        }
+        .arrow {
+          display: block;
+          transform: rotate(90deg);
+          width: 25px;
+          margin: 10px auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="tag">DEADLINE RADAR / SOURCE GUIDE</p>
+      <h1>One announcement.<br />One clear next step.</h1>
+      <p>
+        This app turns contest text into a verifiable local deadline and an
+        editable checklist. This is an offline reference route, not a record of
+        a completed human code tour.
+      </p>
+      <div
+        class="flow"
+        role="img"
+        aria-label="Announcement input flows through parsing and timezone conversion to local deadline, countdown and checklist, then into browser storage."
+      >
+        <div><b>Paste &amp; extract</b><span>App.tsx · extract</span></div>
+        <span class="arrow" aria-hidden="true">→</span>
+        <div>
+          <b>Parse &amp; convert</b
+          ><span
+            >parser.ts · parseAnnouncement<br />time.ts · wallTimeToISO</span
+          >
+        </div>
+        <span class="arrow" aria-hidden="true">→</span>
+        <div>
+          <b>Verify &amp; save</b
+          ><span
+            >App.tsx · saveContest / persist<br />storage.ts ·
+            writeStorage</span
+          >
+        </div>
+      </div>
+      <h2>A three-stop route through the code</h2>
+      <section>
+        <h3>1. Follow the input</h3>
+        <p>
+          Open <a href="../src/App.tsx">src/App.tsx</a> and find
+          <code>extract</code>. The announcement and selected timezone go into
+          <code>parseAnnouncement</code>. Its returned deadline, notes and
+          requirement labels become the editable draft.
+        </p>
+        <p>
+          Visible result: the “Your submission, decoded” panel. A missing date
+          keeps Save disabled until a manual correction is valid.
+        </p>
+      </section>
+      <section>
+        <h3>2. Inspect the important decision</h3>
+        <p>
+          Open <a href="../src/lib/parser.ts">src/lib/parser.ts</a> and find
+          <code>parseAnnouncement</code>, <code>REGIONAL</code> and
+          <code>OFFSETS</code>. Explicit EDT uses UTC−04:00; ET uses New York’s
+          daylight-saving rules for the date.
+          <a href="../src/lib/time.ts">src/lib/time.ts</a> contains
+          <code>wallTimeToISO</code> and the reverse display/edit conversion.
+        </p>
+        <details>
+          <summary>The concrete evidence</summary>
+          <p>
+            The first case in
+            <a href="../src/lib/parser.test.ts">parser.test.ts</a> checks that
+            Oct 26, 2026 at 5 PM EDT is <code>2026-10-26T21:00:00.000Z</code>,
+            displayed in Seoul as <code>2026-10-27T06:00</code>. Separate tests
+            cover seasonal PT/ET, invalid dates and missing-date input.
+          </p>
+        </details>
+      </section>
+      <section>
+        <h3>3. Trace the saved result</h3>
+        <p>
+          Back in <a href="../src/App.tsx">App.tsx</a>, find
+          <code>saveContest</code> and <code>persist</code>. The verified draft
+          becomes a contest.
+          <a href="../src/lib/storage.ts">storage.ts</a> validates saved records
+          and uses the versioned key <code>deadline-radar:v1</code>. The list
+          sorts by the saved instant.
+          <a href="../src/components/Countdown.tsx">Countdown.tsx</a> calculates
+          remaining time and cleans up its timer.
+        </p>
+        <p>
+          Visible result: a tracked card that survives a refresh. Storage errors
+          are displayed; they are never silently presented as successful
+          persistence.
+        </p>
+      </section>
+      <h2>To change this, start here</h2>
+      <ul>
+        <li>
+          Supported dates, timezone abbreviations or detected tasks:
+          <code>parser.ts</code> → <code>findDates</code>,
+          <code>REGIONAL</code>, <code>OFFSETS</code>,
+          <code>extractRequirements</code>.
+        </li>
+        <li>
+          Urgency thresholds: <code>time.ts</code> → <code>urgencyFor</code>;
+          its boundary test documents the behavior.
+        </li>
+        <li>
+          Checklist interactions:
+          <a href="../src/components/Checklist.tsx">Checklist.tsx</a> →
+          <code>Checklist</code>.
+        </li>
+        <li>
+          Sample announcement and timezone menu: <code>App.tsx</code> →
+          <code>SAMPLE</code> and <code>ZONES</code>.
+        </li>
+        <li>
+          Color, spacing and responsive layout:
+          <a href="../src/styles.css">styles.css</a>.
+        </li>
+      </ul>
+      <h2>A practice to reuse</h2>
+      <p>
+        A specific expected result made timezone correctness testable. Compare
+        <a href="prd.md">prd.md → Announcement Extraction</a> with the
+        EDT-to-KST test. On another project, write one real input and its
+        observable expected output before building the interface. Keep
+        unresolved assumptions visible and provide a correction path.
+      </p>
+      <h2>Run it again</h2>
+      <pre><code>npm install
+npm run dev
+
+# Mechanical checks
+npm test
+npm run build
+npm run test:smoke</code></pre>
+      <p>
+        Open the Vite localhost URL. Load sample → extract → verify → track. All
+        data stays in this browser; no external service is called.
+      </p>
+      <small
+        >Source snapshot: commit <code>205dcb9</code>. This map can drift after
+        future code changes. No scripts, CDN, fonts or network access are
+        required to read it.</small
+      >
+    </main>
+  </body>
+</html>

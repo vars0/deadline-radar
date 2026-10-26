@@ -18,7 +18,7 @@ Build mode: fast, autonomous per explicit user instruction. Two commits maximum.
       Verify (mechanical): `npm test`, `npm run build`; browser smoke of sample → extract → save → reload, task edit, manual correction and mobile layout when browser tooling is available.
       Learner check: Load sample, extract, confirm Oct 27 at 06:00 in Seoul, complete one task, save and refresh.
       Commit: `Build Deadline Radar local contest tracker`
-- [ ] **2. Make the project ready to record and share**
+- [x] **2. Make the project ready to record and share**
       Becomes usable: README, <=150-word description, 90-second script, app map and honest remaining submission checklist.
       Why now: Documentation reflects the verified app instead of planned behavior.
       PRD ref: `prd.md > What We're Building`
@@ -39,9 +39,17 @@ Build mode: fast, autonomous per explicit user instruction. Two commits maximum.
 
 ## Code Tour and App Map
 
-- [ ] Evidence-based technical recap prepared
-- [ ] `devpost/app-map.html` generated and paths checked
-      Reference route will follow App extraction → parser/time conversion → display/storage. No human activity or personal reflection will be claimed.
+- [x] Evidence-based technical recap prepared in README and app map: the EDT/KST acceptance example is connected to its parser test and instant-based storage.
+- [x] `devpost/app-map.html` generated and paths checked; opened in Chromium with offline mode and no scripts.
+      Activity mode: static reference recap, not a human guided tour. Route: `App.tsx > extract` → `parser.ts > parseAnnouncement` / `time.ts > wallTimeToISO` → `App.tsx > saveContest` / `storage.ts > writeStorage`.
+      Optional edit and personal reflection: not applicable to the explicitly autonomous no-questions workflow; no learner exercise or mastery is claimed.
+
+## Submission Preparation
+
+- [x] README, screenshot, 113-word short description, and 183-word narration in a 90-second timestamped script prepared.
+- [x] Documentation relative links verified and source snapshot identified in the offline app map.
+- [x] Tests/build and Chromium core-flow checks passed; no runtime network requests or console errors.
+- [ ] Public repository publication, demo recording/upload, human wording review, required form fields/exit survey and Devpost submission remain user actions. See `SUBMISSION.md`.
 
 ## Revisions
 
